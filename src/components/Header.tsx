@@ -20,7 +20,7 @@ const Header = () => {
   return (
     <header className="w-full bg-gray-800 text-white">
       <nav className="flex w-full items-center justify-between px-6 py-3">
-        <h1 className="text-lg font-semibold">Marketplace FE</h1>
+        <h1 className="text-lg font-semibold">Tienda - Grupo 2</h1>
         <ul className="flex gap-6 text-sm">
           {navPaths.map((path) => {
             return (
