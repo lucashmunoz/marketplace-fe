@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import { Product } from "../types/Products";
 // import api, { endpoints } from "../api";
-
-interface Product {
-  item_id: string;
-  description: string;
-  quantity: number;
-  price: number;
-}
 
 const mockedItems: Product[] = [
   {
