@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Product } from "../types/Products";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Product } from "../types/products";
 
 const mockedItems: Product[] = [
   {

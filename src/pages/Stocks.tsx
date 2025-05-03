@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Product } from "../types/Products";
+import { Product } from "../types/products";
 // import api, { endpoints } from "../api";
 
 const mockedItems: Product[] = [
