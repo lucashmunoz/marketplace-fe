@@ -32,7 +32,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Delete old container
-        run: sudo docker rm -f smartmovecontainerfront
+        run: sudo docker rm -f marketplacefrontcontainer
 
       - name: Remove old image
         run: sudo docker system prune -a -f --volumes
