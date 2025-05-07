@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Product } from "../types/products";
 import api, { endpoints } from "../api";
+
+interface Product {
+  itemId: string;
+  description: string;
+  quantity: number;
+  price: number;
+}
 
 const LoadingSkeleton = () => {
   return (

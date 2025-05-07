@@ -2,8 +2,14 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import api, { endpoints } from "../api";
-import { Product } from "../types/products";
 import { ToastContainer, toast } from "react-toastify";
+
+interface Product {
+  itemId: string;
+  description: string;
+  quantity: number;
+  price: number;
+}
 
 const OrderSkeleton = () => (
   <div className="flex w-full max-w-xl flex-col gap-4 bg-white p-4 shadow">
