@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Product } from "../types/products";
 import api, { endpoints } from "../api";
+import { Product } from "../types/products";
+import { ToastContainer, toast } from "react-toastify";
 
 const OrderSkeleton = () => (
   <div className="flex w-full max-w-xl flex-col gap-4 bg-white p-4 shadow">
@@ -29,6 +30,8 @@ const OrderSkeleton = () => (
 );
 
 const Order = () => {
+  const notifyOrderPlaced = () => toast("Orden cargada con éxito", { type: "success" });
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,16 +52,20 @@ const Order = () => {
     }
 
     try {
-      await api.post(endpoints.placeOrder, {
+      const response = await api.post(endpoints.placeOrder, {
         item_id: selectedProduct.itemId,
         quantity,
         email,
         unit_price: unitPrice,
         description: selectedProduct.description
       });
-      setProduct("");
-      setQuantity(1);
-      setEmail("");
+
+      if (response.status === 200) {
+        setProduct("");
+        setQuantity(1);
+        setEmail("");
+        notifyOrderPlaced();
+      }
     } catch (e) {
       console.error("Error creating purchase:", e);
     }
@@ -81,91 +88,94 @@ const Order = () => {
   }, []);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-4">
-      <h2 className="w-full text-lg font-semibold">Órdenes</h2>
+    <>
+      <div className="flex w-full flex-col items-center justify-center gap-4">
+        <h2 className="w-full text-lg font-semibold">Órdenes</h2>
 
-      {loading ? (
-        <OrderSkeleton />
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          className="flex w-full max-w-xl flex-col items-stretch gap-4 bg-white p-4 shadow"
-        >
-          <div className="flex flex-row gap-2">
-            <div className="flex-1">
-              <label
-                htmlFor="product-select"
-                className="mb-1 block text-sm font-medium text-gray-700"
-              >
-                Producto
-              </label>
-              <select
-                id="product-select"
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
-                className="h-12 w-full border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                {products.map((p) => (
-                  <option key={p.itemId} value={p.itemId}>
-                    {p.description}
-                  </option>
-                ))}
-              </select>
+        {loading ? (
+          <OrderSkeleton />
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full max-w-xl flex-col items-stretch gap-4 bg-white p-4 shadow"
+          >
+            <div className="flex flex-row gap-2">
+              <div className="flex-1">
+                <label
+                  htmlFor="product-select"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  Producto
+                </label>
+                <select
+                  id="product-select"
+                  value={product}
+                  onChange={(e) => setProduct(e.target.value)}
+                  className="h-12 w-full border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  {products.map((p) => (
+                    <option key={p.itemId} value={p.itemId}>
+                      {p.description}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="w-full sm:w-28">
+                <label
+                  htmlFor="quantity-input"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  Cantidad
+                </label>
+                <input
+                  id="quantity-input"
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className="h-12 w-full border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
             </div>
 
-            <div className="w-full sm:w-28">
+            <div className="flex flex-col justify-between gap-2 text-sm text-gray-700 sm:flex-row">
+              <div>
+                <span className="font-medium">Precio unitario:</span> ${unitPrice}
+              </div>
+              <div>
+                <span className="font-medium">Precio total:</span> ${totalPrice}
+              </div>
+            </div>
+
+            <div className="w-full">
               <label
-                htmlFor="quantity-input"
+                htmlFor="email-input"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                Cantidad
+                Email
               </label>
               <input
-                id="quantity-input"
-                type="number"
-                min="1"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
+                id="email-input"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="h-12 w-full border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                required
               />
             </div>
-          </div>
 
-          <div className="flex flex-col justify-between gap-2 text-sm text-gray-700 sm:flex-row">
-            <div>
-              <span className="font-medium">Precio unitario:</span> ${unitPrice}
-            </div>
-            <div>
-              <span className="font-medium">Precio total:</span> ${totalPrice}
-            </div>
-          </div>
-
-          <div className="w-full">
-            <label
-              htmlFor="email-input"
-              className="mb-1 block text-sm font-medium text-gray-700"
+            <button
+              type="submit"
+              className="h-12 w-full bg-blue-600 px-6 font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
             >
-              Email
-            </label>
-            <input
-              id="email-input"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-12 w-full border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="h-12 w-full bg-blue-600 px-6 font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
-          >
-            Comprar
-          </button>
-        </form>
-      )}
-    </div>
+              Comprar
+            </button>
+          </form>
+        )}
+      </div>
+      <ToastContainer />
+    </>
   );
 };
 
