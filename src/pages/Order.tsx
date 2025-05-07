@@ -187,7 +187,7 @@ const Order = () => {
           </form>
         )}
       </div>
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </>
   );
 };

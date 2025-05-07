@@ -15,7 +15,9 @@ const Header = () => {
   return (
     <header className="w-full bg-gray-800 text-white">
       <nav className="flex items-center justify-between px-6 py-3">
-        <h1 className="text-lg font-semibold">Tienda</h1>
+        <Link to={paths.order}>
+          <h1 className="text-lg font-semibold">Tienda</h1>
+        </Link>
 
         {/* Botón para mobile */}
         <button
