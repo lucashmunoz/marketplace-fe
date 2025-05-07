@@ -64,7 +64,7 @@ const Order = () => {
         item_id: selectedProduct.itemId,
         quantity,
         email,
-        unit_price: unitPrice,
+        price: unitPrice,
         description: selectedProduct.description
       });
 
