@@ -49,6 +49,8 @@ const Order = () => {
   const unitPrice = selectedProduct?.price ?? 0;
   const totalPrice = parseFloat((unitPrice * quantity).toString()).toFixed(2);
 
+  const isFormValid = product && quantity > 0 && email.trim() !== "";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -67,7 +69,7 @@ const Order = () => {
       });
 
       if (response.status === 200) {
-        setProduct("");
+        setProduct(products[0].itemId); // set default selected product
         setQuantity(1);
         setEmail("");
         notifyOrderPlaced();
@@ -173,7 +175,12 @@ const Order = () => {
 
             <button
               type="submit"
-              className="h-12 w-full bg-blue-600 px-6 font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+              disabled={!isFormValid || loading}
+              className={`h-12 w-full px-6 font-semibold text-white transition sm:w-auto ${
+                !isFormValid || loading
+                  ? "cursor-not-allowed bg-gray-400"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
             >
               Comprar
             </button>
