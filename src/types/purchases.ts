@@ -1,10 +1,10 @@
 export interface Purchase {
   id: string;
-  item_id: string;
+  itemId: string;
   quantity: number;
   email: string;
-  unit_price: number;
-  total_price: number;
+  unitPrice: number;
+  totalPrice: number;
   date: string;
   description: string;
 }

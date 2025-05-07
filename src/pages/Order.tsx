@@ -2,27 +2,7 @@ import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Product } from "../types/products";
-
-const mockedItems: Product[] = [
-  {
-    item_id: "01b1beb5-ba56-4dc3-be5c-f024ccc256eb",
-    description: "MacBook",
-    quantity: 10,
-    price: 999.99
-  },
-  {
-    item_id: "cc695cb3-27c8-4906-9399-d8c6c231f0ae",
-    description: "Samsung S24 Ultra",
-    quantity: 5,
-    price: 1200.0
-  },
-  {
-    item_id: "16b87ed4-584d-4ede-bd23-d9bcfd0e5364",
-    description: "Smartwatch",
-    quantity: 20,
-    price: 200.5
-  }
-];
+import api, { endpoints } from "../api";
 
 const OrderSkeleton = () => (
   <div className="flex w-full max-w-xl flex-col gap-4 bg-white p-4 shadow">
@@ -56,28 +36,44 @@ const Order = () => {
   const [quantity, setQuantity] = useState(1);
   const [email, setEmail] = useState("");
 
-  const selectedProduct = products.find((p) => p.item_id === product);
+  const selectedProduct = products.find((p) => p.itemId === product);
   const unitPrice = selectedProduct?.price ?? 0;
-  const totalPrice = unitPrice * quantity;
+  const totalPrice = parseFloat((unitPrice * quantity).toString()).toFixed(2);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedProduct) {
-      alert(`Pedido: ${quantity} x ${selectedProduct.description} = $${totalPrice}`);
+    setLoading(true);
+
+    if (!selectedProduct) {
+      return;
     }
+
+    try {
+      await api.post(endpoints.placeOrder, {
+        item_id: selectedProduct.itemId,
+        quantity,
+        email,
+        unit_price: unitPrice,
+        description: selectedProduct.description
+      });
+      setProduct("");
+      setQuantity(1);
+      setEmail("");
+    } catch (e) {
+      console.error("Error creating purchase:", e);
+    }
+
+    setLoading(false);
   };
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-      const response = await new Promise<Product[]>((resolve) => {
-        setTimeout(() => {
-          resolve(mockedItems);
-        }, 1000);
-      });
 
-      setProducts(response);
-      setProduct(response[0].item_id); // set default selected product
+      const response = await api.get<Product[]>(endpoints.items);
+      setProducts(response?.data);
+      setProduct(response?.data[0].itemId); // set default selected product
+
       setLoading(false);
     };
 
@@ -110,7 +106,7 @@ const Order = () => {
                 className="h-12 w-full border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 {products.map((p) => (
-                  <option key={p.item_id} value={p.item_id}>
+                  <option key={p.itemId} value={p.itemId}>
                     {p.description}
                   </option>
                 ))}

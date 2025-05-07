@@ -1,28 +1,7 @@
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Product } from "../types/products";
-// import api, { endpoints } from "../api";
-
-const mockedItems: Product[] = [
-  {
-    item_id: "01b1beb5-ba56-4dc3-be5c-f024ccc256eb",
-    description: "MacBook",
-    quantity: 10,
-    price: 999.99
-  },
-  {
-    item_id: "cc695cb3-27c8-4906-9399-d8c6c231f0ae",
-    description: "Samsung S24 Ultra",
-    quantity: 5,
-    price: 1200.0
-  },
-  {
-    item_id: "16b87ed4-584d-4ede-bd23-d9bcfd0e5364",
-    description: "Smartwatch",
-    quantity: 20,
-    price: 200.5
-  }
-];
+import api, { endpoints } from "../api";
 
 const LoadingSkeleton = () => {
   return (
@@ -44,15 +23,10 @@ const Stocks = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-      // const response = await api.get<Product[]>(endpoints.items);
 
-      const response = await new Promise<Product[]>((resolve) => {
-        setTimeout(() => {
-          resolve(mockedItems);
-        }, 1000);
-      });
+      const response = await api.get<Product[]>(endpoints.items);
+      setProducts(response?.data);
 
-      setProducts(response);
       setLoading(false);
     };
 
@@ -69,7 +43,7 @@ const Stocks = () => {
         <div className="flex w-full max-w-xl flex-col gap-4">
           {products.map((product) => (
             <div
-              key={product.item_id}
+              key={product.itemId}
               className="flex w-full items-center justify-between bg-white p-4 shadow"
             >
               <div className="font-medium">{product.description}</div>
