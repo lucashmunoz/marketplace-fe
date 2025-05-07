@@ -99,7 +99,7 @@ const Order = () => {
             onSubmit={handleSubmit}
             className="flex w-full max-w-xl flex-col items-stretch gap-4 bg-white p-4 shadow"
           >
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row flex-wrap gap-2">
               <div className="flex-1">
                 <label
                   htmlFor="product-select"
