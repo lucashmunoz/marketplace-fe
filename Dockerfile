@@ -20,7 +20,7 @@ WORKDIR /app
 # Copiar sólo el build
 COPY --from=builder /app/dist /app/dist
 
-EXPOSE 3000
+EXPOSE 5173
 
 # Usar `serve` para servir los archivos estáticos
 CMD ["serve", "-s", "dist", "-l", "5173"]
