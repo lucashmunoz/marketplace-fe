@@ -179,7 +179,7 @@ const Order = () => {
               className={`h-12 w-full px-6 font-semibold text-white transition sm:w-auto ${
                 !isFormValid || loading
                   ? "cursor-not-allowed bg-gray-400"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  : "cursor-pointer bg-blue-600 hover:bg-blue-700"
               }`}
             >
               Comprar
